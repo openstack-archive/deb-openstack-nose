@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/^s//" \
+https://github.com/openstack-dev/openstack-nose/tags .*/(\d[\d\.]+)\.tar\.gz
