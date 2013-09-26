@@ -20,6 +20,8 @@ Package: python-openstack.nose-plugin
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${python:Depends}
+Replaces: python-openstack-common
+Breaks: python-openstack-common
 Description: nosetests output to mimic the output of openstack's run_tests.py - Python 2.x
  This package provides a nose plugin that allow's nosetests output to mimic the
  output of openstack's run_tests.py.

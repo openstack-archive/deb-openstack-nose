@@ -1,3 +1,9 @@
+openstack-nose (0.3-2) unstable; urgency=low
+
+  * Added Replaces: + Breaks: python-openstack-common (Closes: #722882).
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 26 Sep 2013 13:48:35 +0800
+
 openstack-nose (0.3-1) unstable; urgency=low
 
   * Initial release (Closes: #717784).
