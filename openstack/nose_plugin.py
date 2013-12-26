@@ -4,12 +4,16 @@ Openstack run_tests.py style output for nosetests
 
 import heapq
 import logging
+import os
+import sys
 import time
 
 import colorama
 import termcolor
 from nose import plugins
 from nose import suite
+from nose import core
+from nose import SkipTest
 
 
 log = logging.getLogger("openstack.nose")
@@ -62,7 +66,11 @@ class Openstack(plugins.Plugin):
         else:
             return None, parts[0]
 
-    def _writeResult(self, test, long_result, color, short_result):
+    def _writeResult(self, test, long_result, color, short_result,
+                     show_elapsed=True):
+        if isinstance(test, suite.ContextSuite):
+            return
+
         name = self._get_name(test)
         elapsed = self.times[name][1] - self.times[name][0]
         item = (elapsed, name)
@@ -73,7 +81,7 @@ class Openstack(plugins.Plugin):
 
         if self.show_all:
             self.colorizer.write(long_result, color)
-            if self.show_elapsed:
+            if self.show_elapsed and show_elapsed:
                 color = self._get_color(elapsed)
                 self.colorizer.write("  %.2f" % elapsed, color)
             self.stream.writeln()
@@ -83,33 +91,50 @@ class Openstack(plugins.Plugin):
 
     # These functions are for patching into the result object
     def _add_error(self, test, err):
+        if isinstance(test, suite.ContextSuite):
+            return
+        if isinstance(err[1], SkipTest):
+            return self._add_skip(test, err)
+
         name = self._get_name(test)
         self.times[name].append(time.time())
         self._writeResult(test, "ERROR", "red", "E")
         self._result_addError(test, err)
 
     def _add_failure(self, test, err):
+        if isinstance(test, suite.ContextSuite):
+            return
+
         name = self._get_name(test)
         self.times[name].append(time.time())
         self._writeResult(test, "FAIL", "red", "F")
         self._result_addFailure(test, err)
 
     def _add_success(self, test):
+        if isinstance(test, suite.ContextSuite):
+            return
+
         name = self._get_name(test)
         self.times[name].append(time.time())
-        self._writeResult(test, "OK", "green", ".")
+        self._writeResult(test, "OK  ", "green", ".")
         self._result_addSuccess(test)
 
     def _add_skip(self, test, reason):
+        if isinstance(test, suite.ContextSuite):
+            return
+
         name = self._get_name(test)
         self.times[name].append(time.time())
-        self._writeResult(test, "SKIP", "blue", "S")
+        self._writeResult(test, "SKIP", "blue", "S", show_elapsed=False)
         self._result_addSkip(test, reason)
 
     def _print_errors(self):
         if self.dots or self.show_all:
             self.stream.writeln()
         self._result_printErrors()
+
+    def _is_a_tty(self):
+        return getattr(os, 'isatty') and os.isatty(sys.stdout.fileno())
 
     def configure(self, options, conf):
         plugins.Plugin.configure(self, options, conf)
@@ -119,6 +144,7 @@ class Openstack(plugins.Plugin):
         self.show_elapsed = options.openstack_show_elapsed
         self.num_slow = int(options.openstack_num_slow)
         self.color = options.openstack_color
+        self.use_stdout = options.openstack_stdout
         self.colorizer = None
         self._cls = None
         self._slow_tests = []
@@ -144,11 +170,31 @@ class Openstack(plugins.Plugin):
                           default=env.get("NOSE_OPENSTACK_COLOR"),
                           dest="openstack_color",
                           help="Colorize output. [NOSE_OPENSTACK_COLOR]")
+        parser.add_option("--openstack-nocolor", action="store_false",
+                          default=env.get("NOSE_OPENSTACK_COLOR"),
+                          dest="openstack_color",
+                          help=("Disable colorized output. "
+                                "[NOSE_OPENSTACK_COLOR]"))
         parser.add_option("--openstack-num-slow",
                           dest="openstack_num_slow",
                           default=env.get("NOSE_OPENSTACK_NUM_SLOW", 5),
                           help="Number top slowest tests to report. "
                                "[NOSE_OPENSTACK_NUM_SLOW]")
+        parser.add_option("--openstack-stdout", action="store_true",
+                          default=env.get("NOSE_OPENSTACK_STDOUT"),
+                          dest="openstack_stdout",
+                          help="Output to stdout. [NOSE_OPENSTACK_STDOUT]")
+
+    def prepareTestRunner(self, runner):
+        if (not isinstance(runner, core.TextTestRunner) or
+            not self.use_stdout):
+            return
+
+        new_runner = core.TextTestRunner(stream=sys.__stdout__,
+                                         descriptions=runner.descriptions,
+                                         verbosity=runner.verbosity,
+                                         config=runner.config)
+        return new_runner
 
     def prepareTestResult(self, result):
         self._result = result
@@ -183,13 +229,13 @@ class Openstack(plugins.Plugin):
             stream.writeln("Slowest %i tests took %.2f secs:"
                                 % (len(slow_tests), slow_total_time))
             for time, test in sorted(slow_tests, reverse=True):
-                name = '.'.join(test)
+                name = '.'.join([str(i) for i in test])
                 self.colorizer.writeln("    %.2f    %s" % (time, name),
                                        self._get_color(time))
 
     def setOutputStream(self, stream):
         self.stream = stream
-        if self.color:
+        if self.color and self._is_a_tty:
             self.colorizer = Colorizer(self.stream)
         else:
             self.colorizer = NullColorizer(self.stream)
