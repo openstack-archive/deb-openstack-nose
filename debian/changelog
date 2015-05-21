@@ -1,6 +1,9 @@
 openstack-nose (0.11-2) unstable; urgency=medium
 
   * Added upstream patch for better formating.
+  * Ran wrap-and-sort -t -a, and removed version for python-all
+    build-depends.
+  * Bumped Standards-Version to 3.9.6 (no change).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 21 May 2015 18:35:07 +0200
 
