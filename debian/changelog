@@ -1,3 +1,9 @@
+openstack-nose (0.11-2) unstable; urgency=medium
+
+  * Added upstream patch for better formating.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 21 May 2015 18:35:07 +0200
+
 openstack-nose (0.11-1) unstable; urgency=medium
 
   * New upstream release.

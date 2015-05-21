@@ -1,0 +1,20 @@
+Description: Fixes unicode formatting bug
+Author: Obulpathi <obulapathi.challa@rackspace.com>
+Date: Wed, 20 May 2015 19:27:36 +0000 (-0400)
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack-dev%2Fopenstack-nose.git;a=commitdiff_plain;h=de9dcf85a0b53628d709c6314bccfefed780703f
+Change-Id: I0c3551efab09724dee31855d4a3c88164f9888c9
+Origin: upstream, https://review.openstack.org/#/c/184594/
+Last-Update: 2015-05-21
+
+diff --git a/openstack/nose_plugin.py b/openstack/nose_plugin.py
+index 03230f8..b7f9404 100644
+--- a/openstack/nose_plugin.py
++++ b/openstack/nose_plugin.py
+@@ -250,6 +250,6 @@ class Openstack(plugins.Plugin):
+             if cls != self._cls:
+                 self.stream.writeln(str(cls))
+                 self._cls = cls
+-            self.stream.write((' ' * 4 + str(name)).ljust(65))
++            self.stream.write('    {0}'.format(name).ljust(65))
+             self.stream.flush()
+         self.times[(cls, name)] = [time.time()]
