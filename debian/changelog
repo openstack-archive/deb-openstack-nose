@@ -1,12 +1,13 @@
 openstack-nose (0.11-3) UNRELEASED; urgency=medium
 
   * Fixed VCS URLs (https).
+  * Fixed typo in d/changelog.
 
  -- Ondřej Nový <novy@ondrej.org>  Sun, 28 Feb 2016 15:31:45 +0100
 
 openstack-nose (0.11-2) unstable; urgency=medium
 
-  * Added upstream patch for better formating.
+  * Added upstream patch for better formatting.
   * Ran wrap-and-sort -t -a, and removed version for python-all
     build-depends.
   * Bumped Standards-Version to 3.9.6 (no change).
