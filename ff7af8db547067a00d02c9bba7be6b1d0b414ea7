@@ -1,0 +1,11 @@
+Code-Review+1: xu-haiwei <hai-xu@xr.jp.nec.com>
+Code-Review+1: Leandro Ignacio Costantino <leandro.i.costantino@intel.com>
+Code-Review+1: Andreas Jaeger <jaegerandi@gmail.com>
+Code-Review+2: Jason Kölker <jason@koelker.net>
+Workflow+1: Jason Kölker <jason@koelker.net>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 01 Aug 2014 17:12:09 +0000
+Reviewed-on: https://review.openstack.org/71756
+Project: openstack/deb-openstack-nose
+Branch: refs/heads/master

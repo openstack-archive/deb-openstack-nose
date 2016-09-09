@@ -1,0 +1,8 @@
+Code-Review+2: Jason Kölker <jason@koelker.net>
+Workflow+1: Jason Kölker <jason@koelker.net>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 20 May 2015 20:42:41 +0000
+Reviewed-on: https://review.openstack.org/184594
+Project: openstack/deb-openstack-nose
+Branch: refs/heads/master
