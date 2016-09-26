@@ -10,8 +10,8 @@ Build-Depends: debhelper (>= 9),
                python3-all,
                python3-setuptools,
 Standards-Version: 3.9.6
-Vcs-Browser: https://anonscm.debian.org/cgit/openstack/openstack-nose.git/
-Vcs-Git: https://anonscm.debian.org/git/openstack/openstack-nose.git
+Vcs-Browser: https://git.openstack.org/cgit/openstack/deb-openstack-nose?h=debian%2Fnewton
+Vcs-Git: https://git.openstack.org/openstack/deb-openstack-nose -b debian/newton
 Homepage: https://github.com/openstack-dev/openstack-nose
 
 Package: python-openstack.nose-plugin
